@@ -1,6 +1,6 @@
-name: pass_web
+name: research
 channels:
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.11
   - numpy

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "Creating conda environment pass_web..."
-conda env create -f environment_pass_web.yml -q
+echo "Creating conda environment webui..."
+conda env create -f webui/environment_webui.yml -q
 
-echo "Creating conda environment pass_research..."
-conda env create -f environment_pass_research.yml -q
+echo "Creating conda environment research..."
+conda env create -f research/environment_research.yml -q
 
 echo "Installing shfmt..."
 curl -sS https://webi.sh/shfmt | sh
