@@ -1,1 +1,1 @@
-# pass
+# pass (Pragmatic Alliance for Semester Survival)

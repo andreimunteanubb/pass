@@ -1,0 +1,29 @@
+{
+	"name": "pass",
+	"dockerFile": "Dockerfile",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.black-formatter",
+				"ms-azuretools.vscode-docker",
+				"ms-python.pylint",
+				"kevinkyang.auto-comment-blocks",
+				"njpwerner.autodocstring",
+				"streetsidesoftware.code-spell-checker",
+				"timonwong.shellcheck",
+				"mkhl.shfmt",
+				"shardulm94.trailing-spaces",
+				"redhat.vscode-yaml"
+			],
+			"settings": {
+				"forwardX11": true
+			}
+		}
+	},
+	"forwardPorts": [
+		6000
+	],
+	"postCreateCommand": "chmod +x .devcontainer/container-config.sh && ./.devcontainer/container-config.sh"
+}
