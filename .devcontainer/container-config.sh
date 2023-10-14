@@ -10,14 +10,6 @@ echo "Installing shfmt..."
 curl -sS https://webi.sh/shfmt | sh
 source ~/.config/envman/PATH.env
 
-#read -p "Enter your GitHub username: " github_username
-#github_username="andreimunteanubb"
-#git config --global user.name "$github_username"
-
-#read -p "Enter your GitHub email: " github_email
-#github_email="andrei.muntean@stud.ubbcluj.ro"
-#git config --global user.email "$github_email"
-
 echo "Testing X11 forwarding..."
 xeyes
 
