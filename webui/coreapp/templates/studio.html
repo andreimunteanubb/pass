@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  {% csrf_token %}
+
+  <style>
+    .studio-card {
+      width: 100%;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .before_card {
+      background-color: #818589;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    
+    .after_card {
+      background-color: #dcdee1;
+      color: #282727;
+    }
+  </style>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 style="padding-top: 15px; padding-bottom: 15px; text-align: center;">PASS Inference Studio</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        {% if before_hash is None %}
+        <a href="{% url 'upload' %}" target="_blank" style="text-decoration: none;">
+          <div class="text-center studio-card before_card" id="upload-div">
+            <h1 class="card-title">Click to upload image</h1>
+          </div>
+        </a>
+        {% else %}
+        <img src="{% static '' %}{{before_hash}}.png" class="img-fluid" />
+        {% endif %}
+      </div>
+      <div class="col-6">
+        {% if after_hash is None %}
+        <div class="text-center studio-card after_card">
+          <h1 class="card-title">Result will be shown here...</h1>
+        </div>
+        {% else %}
+        <img src="{% static '' %}{{after_hash}}.png" class="img-fluid" />
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center" style="padding-top: 30px;">
+        <form method="POST" action="{% url 'inference' %}">
+          {% csrf_token %}
+          <button class="btn btn-primary mx-auto" type="submit" {% if before_hash is None %}disabled{% endif %}>
+            Run inference
+          </button>
+        </form>
+      </div>
+      {% if before_hash or after_hash %}
+      <div class="col-12 d-flex justify-content-center" style="padding-top: 10px;">
+        <form method="POST" action="{% url 'delete_session' %}">
+          {% csrf_token %}
+          <button class="btn btn-danger mx-auto" type="submit">Delete</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
