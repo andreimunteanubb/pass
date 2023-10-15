@@ -1,0 +1,40 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.pyc
+*.pyo
+*~
+*.bak
+*.swp
+
+# Distribution / packaging
+/dist/
+/build/
+*.egg-info/
+*.egg
+*.egg-info
+
+# Virtual environment
+/venv/
+/.venv/
+/.env/
+.env/
+env/
+
+# Local development settings
+local_settings.py
+
+# IDE files and directories
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite3
+
+# Environment variables
+.env
