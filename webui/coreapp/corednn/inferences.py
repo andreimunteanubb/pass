@@ -1,6 +1,21 @@
 """ This module contains functions that run the inference on the input image. """
+import numpy as np
+from PIL import Image, ImageFont, ImageDraw
 
-from PIL import Image
+
+def draw_image(image: Image, text: str):
+    image = np.array(image.convert('L'))
+    image = Image.fromarray(np.repeat(image[..., np.newaxis], 3, axis=2))
+    font = ImageFont.truetype("segoeui.ttf", 90)
+    draw = ImageDraw.Draw(image)
+    h, w = image.size
+    position = (h // 2 - 70, w // 2 - 90)
+
+    bbox = draw.textbbox(position, text, font=font)
+    draw.rectangle(bbox, fill=(37, 150, 190))
+    draw.text(position, text, font=font, fill="black")
+
+    return image
 
 
 def inference(input_image_hash: str, output_image_hash: str):
@@ -27,6 +42,8 @@ def inference(input_image_hash: str, output_image_hash: str):
     #########################################
     # TODO: Add your inference code here
     #########################################
-    output_image = input_image.convert("L")
+    text = "Benign"
 
-    output_image.save(f"{prefix}{output_image_hash}{suffix}")
+    image = draw_image(input_image, text)
+
+    image.save(f"{prefix}{output_image_hash}{suffix}")
