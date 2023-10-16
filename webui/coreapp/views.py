@@ -59,18 +59,8 @@ def upload_view(request):
         image.save(f"coreapp/static/{image_hash}.png")
         # only save the hash in the session once the image was saved to disk
         request.session["before_hash"] = image_hash
-
-        # This is used to add a delay between the upload and inference
-        return render(
-            request,
-            "goto_studio.html",
-            {
-                "title": "Image uploaded successfully!",
-                "subtitle": "Nothing to do here. Please go back to the inference studio.",
-            },
-        )
     # if view is not POST, render the upload page
-    return render(request, "upload.html")
+    return studio_view(request)
 
 
 def inference_view(request):
