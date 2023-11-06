@@ -44,3 +44,4 @@ def apply_augmentation(train_df, valid_df, test_df):
                                         batch_size=325,
                                         seed=88
                                         )
+    return train_gen, valid_gen, test_gen

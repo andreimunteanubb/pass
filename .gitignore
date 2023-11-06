@@ -38,3 +38,6 @@ local_settings.py
 
 # Environment variables
 .env
+
+# Data
+*/input/*

@@ -1,10 +1,11 @@
-import keras,math
+import keras, math
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import GlobalAveragePooling2D,BatchNormalization
-from keras.layers.core import Dense,Dropout
+from keras.applications import DenseNet201
+from keras.layers import GlobalAveragePooling2D, BatchNormalization
+from keras.layers import Dense, Dropout
 from keras.models import Model
 import tensorflow as tf
-from tensorflow.keras.applications import DenseNet201
+
 
 def create_model():
     # base_model = InceptionV3(include_top= False, weights="imagenet", input_shape=(224,224,3))
