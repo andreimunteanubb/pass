@@ -54,7 +54,6 @@ def read_test_data(test_list):
         lable = img.split(os.path.sep)[4]
 
 
-
 def read_data(samples_list: list, dir_name: str, is_train=False):
     p = 0
     dirname = os.path.dirname(__file__)
@@ -75,6 +74,7 @@ def read_data(samples_list: list, dir_name: str, is_train=False):
         if (lable == "[Malignant] early Pre-B"):
             b = (Path(crr_dir, f'../tmp/{dir_name}/EarlyPreB/' + lable + str(p) + '.png'))
         p += 1
+        os.makedirs(b.parent.as_posix(), exist_ok=True)
         cv2.imwrite(b.as_posix(), i)
 
         if is_train:
@@ -104,7 +104,8 @@ def read_data(samples_list: list, dir_name: str, is_train=False):
                 b = (Path(crr_dir, f'../tmp/{dir_name}/EarlyPreB/' + lable + str(p) + '.png'))
             p += 1
             out = cv2.cvtColor(out, cv2.COLOR_RGB2BGR)
+            os.makedirs(b.parent.as_posix(), exist_ok=True)
             cv2.imwrite(b.as_posix(), out)
 
     toc2 = time.perf_counter()
-    print(f"2917 samples processed in {((toc2 - tic) / 60)} minutes")
+    # print(f"2917 samples processed in {((toc2 - tic) / 60)} minutes")

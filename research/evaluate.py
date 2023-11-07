@@ -78,7 +78,7 @@ def compute_confusion_matrix(model, X_test, y_test):
     # Confusion matrix:
     matrix = confusion_matrix(y_test, bin_predict)
     print('Confusion Matrix:\n', matrix)
-    return matrix
+    return matrix, bin_predict
 
 
 import itertools
@@ -125,75 +125,76 @@ def plot_confusion_matrix(cm,
     plt.xlabel('Predicted label\n Accuracy={:0.4f}; Misclass={:0.4f}'.format(accuracy, misclass))
     plt.show()
 
-def evaluate_model(model, test_gen, bin_predict):
+
+def evaluate_model(model, test_gen):
     for X_batch, y_batch in test_gen:
         y_test = y_batch
         X_test = X_batch
         break
 
-        matrix = compute_confusion_matrix(model, )
+    matrix, bin_predict = compute_confusion_matrix(model, X_test, y_test)
 
-        plot_confusion_matrix(cm=np.array(matrix),
-                              normalize=False,
-                              target_names=['EarlyPreB', 'PreB', 'ProB', 'benign'],
-                              title="Confusion Matrix")
+    plot_confusion_matrix(cm=np.array(matrix),
+                          normalize=False,
+                          target_names=['EarlyPreB', 'PreB', 'ProB', 'benign'],
+                          title="Confusion Matrix")
 
-        plot_confusion_matrix(cm=np.array(matrix),
-                              normalize=True,
-                              target_names=['EarlyPreB', 'PreB', 'ProB', 'benign'],
-                              title="Confusion Matrix, Normalized")
+    plot_confusion_matrix(cm=np.array(matrix),
+                          normalize=True,
+                          target_names=['EarlyPreB', 'PreB', 'ProB', 'benign'],
+                          title="Confusion Matrix, Normalized")
 
-        class_metrics = metrics.classification_report(y_test, bin_predict, labels=[0, 1])
-        print(class_metrics)
+    class_metrics = metrics.classification_report(y_test, bin_predict, labels=[0, 1])
+    print(class_metrics)
 
-        FP = matrix.sum(axis=0) - np.diag(matrix)
-        FN = matrix.sum(axis=1) - np.diag(matrix)
-        TP = np.diag(matrix)
-        TN = matrix[:].sum() - (FP + FN + TP)
+    FP = matrix.sum(axis=0) - np.diag(matrix)
+    FN = matrix.sum(axis=1) - np.diag(matrix)
+    TP = np.diag(matrix)
+    TN = matrix[:].sum() - (FP + FN + TP)
 
-        TPR = TP / (TP + FN)
-        TNR = TN / (TN + FP)
-        PPV = TP / (TP + FP)
-        NPV = TN / (TN + FN)
-        FPR = FP / (FP + TN)
-        FNR = FN / (TP + FN)
-        FDR = FP / (TP + FP)
+    TPR = TP / (TP + FN)
+    TNR = TN / (TN + FP)
+    PPV = TP / (TP + FP)
+    NPV = TN / (TN + FN)
+    FPR = FP / (FP + TN)
+    FNR = FN / (TP + FN)
+    FDR = FP / (TP + FP)
 
-        ACC = (TP + TN) / (TP + FP + FN + TN)
+    ACC = (TP + TN) / (TP + FP + FN + TN)
 
-        print('Other Metrics:')
-        MAE = mean_absolute_error(y_test, bin_predict)
+    print('Other Metrics:')
+    MAE = mean_absolute_error(y_test, bin_predict)
 
-        print('MAE ----------------------------------------------:', MAE)
-        print('Accuracy -----------------------------------------:', ACC)
-        print('Precision (positive predictive value)-------------:', PPV)
-        print('Recall (Sensitivity, hit rate, true positive rate):', TPR)
-        print('Specificity (true negative rate)------------------:', TNR)
-        print('Negative Predictive Value-------------------------:', NPV)
-        print('Fall out (false positive rate)--------------------:', FPR)
-        print('False Negative Rate-------------------------------:', FNR)
-        print('False discovery rate------------------------------:', FDR)
+    print('MAE ----------------------------------------------:', MAE)
+    print('Accuracy -----------------------------------------:', ACC)
+    print('Precision (positive predictive value)-------------:', PPV)
+    print('Recall (Sensitivity, hit rate, true positive rate):', TPR)
+    print('Specificity (true negative rate)------------------:', TNR)
+    print('Negative Predictive Value-------------------------:', NPV)
+    print('Fall out (false positive rate)--------------------:', FPR)
+    print('False Negative Rate-------------------------------:', FNR)
+    print('False discovery rate------------------------------:', FDR)
 
-        preds = model.predict(X_test)
-        # print(preds)
-        print('Shape of preds: ', preds.shape)
-        plt.figure(figsize=(12, 12))
+    preds = model.predict(X_test)
+    # print(preds)
+    print('Shape of preds: ', preds.shape)
+    plt.figure(figsize=(12, 12))
 
+    number = np.random.choice(preds.shape[0])
+
+    for i in range(25):
+        plt.subplot(5, 5, i + 1)
+        plt.grid(False)
+        plt.xticks([])
+        plt.yticks([])
         number = np.random.choice(preds.shape[0])
-
-        for i in range(25):
-            plt.subplot(5, 5, i + 1)
-            plt.grid(False)
-            plt.xticks([])
-            plt.yticks([])
-            number = np.random.choice(preds.shape[0])
-            pred = np.argmax(preds[number])
-            actual = (y_test[number])
-            col = 'g'
-            if pred != actual:
-                col = 'r'
-            plt.xlabel('N={} | P={} | GT={}'.format(number, pred, actual),
-                       color=col)  # N= number P= prediction GT= actual (ground truth)
-            image = X_test[number]  # cv2.cvtColor(X_test[number], cv2.COLOR_BGR2RGB)
-            plt.imshow(((image * 255).astype(np.uint8)), cmap='binary')
-        plt.show()
+        pred = np.argmax(preds[number])
+        actual = (y_test[number])
+        col = 'g'
+        if pred != actual:
+            col = 'r'
+        plt.xlabel('N={} | P={} | GT={}'.format(number, pred, actual),
+                   color=col)  # N= number P= prediction GT= actual (ground truth)
+        image = X_test[number]  # cv2.cvtColor(X_test[number], cv2.COLOR_BGR2RGB)
+        plt.imshow(((image * 255).astype(np.uint8)), cmap='binary')
+    plt.show()

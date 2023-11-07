@@ -1,18 +1,21 @@
 import os
-from random import random
+import random
 from imutils import paths
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from pathlib import Path
 
 
 def create_test_dataframe():
-    prepared_data_path = '../tmp/prepared_test/'
+    dirname = os.path.dirname(__file__)
+    crr_dir = Path(dirname)
+    prepared_data_path = Path(crr_dir, '../tmp/prepare_test_data/')
     prepared_data_list_filenames = (sorted(list(paths.list_images(prepared_data_path))))
     random.shuffle(prepared_data_list_filenames)
     prepared_data_list_labels = []
 
     for line in prepared_data_list_filenames:
-        prepared_data_list_labels.append(line.split(os.path.sep)[3])
+        prepared_data_list_labels.append(line.split(os.path.sep)[-2])
 
     I_series = pd.Series(prepared_data_list_filenames, name='filenames')
     L_series = pd.Series(prepared_data_list_labels, name='labels')
@@ -24,13 +27,15 @@ def create_test_dataframe():
 
 
 def create_train_dataframe():
-    prepared_data_path = '../tmp/prepared_data/'
+    dirname = os.path.dirname(__file__)
+    crr_dir = Path(dirname)
+    prepared_data_path = Path(crr_dir, '../tmp/prepare_data/')
     prepared_data_list_filenames = (sorted(list(paths.list_images(prepared_data_path))))
     random.shuffle(prepared_data_list_filenames)
     prepared_data_list_labels = []
 
     for line in prepared_data_list_filenames:
-        prepared_data_list_labels.append(line.split(os.path.sep)[3])
+        prepared_data_list_labels.append(line.split(os.path.sep)[-2])
 
     I_series = pd.Series(prepared_data_list_filenames, name='filenames')
     L_series = pd.Series(prepared_data_list_labels, name='labels')

@@ -41,8 +41,8 @@ if __name__ == "__main__":
 
     # prepare datasets
     # TODO: check if data is already ready and discard
-    read_data(train_list, "prepare_data", True)
-    read_data(test_list, "prepare_test_data")
+    # read_data(train_list, "prepare_data", True)
+    # read_data(test_list, "prepare_test_data")
 
     # create data frames
     training_df = create_train_dataframe()
@@ -57,3 +57,4 @@ if __name__ == "__main__":
     model = create_model()
 
     logs = train_model(model, train_post, valid_post)
+
