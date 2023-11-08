@@ -114,6 +114,10 @@ Chiorean Alexandra, Data Science, maria.alexandra.chiorean@stud.ubbcluj.ro
 		\item conclude by the the results obtained.
 		\item Please add a graphical abstract of your work. 
 	\end{itemize}
+ TODO:
+ - document dataset -> number of samples, location, classes (exploratory data analysis)
+ - try to replicate the results from the repo (https://github.com/MAmirEshraghi/Lightweight-Deep-CNN-Based-Mobile-App-in-the-Screening-of-ALL)
+ - use tiny efficientnet
 
 	
 
@@ -236,6 +240,54 @@ Last but not least, we use Docker, for the federated learning process, which ens
 Describe your approach!
 
 Describe in reasonable detail the algorithm you are using to address this problem. A psuedocode description of the algorithm you are using is frequently useful. Trace through a concrete example, showing how your algorithm processes this example. The example should be complex enough to illustrate all of the important aspects of the problem but simple enough to be easily understood. If possible, an intuitively meaningful example is better than one with meaningless symbols.
+
+\section{Convolutional Neural Networks}
+
+Convolutional Neural Networks, are a class of deep learning models specifically designed for processing images and videos. They are widely used in computer vision tasks like image recognition, object detection, and image generation. 
+
+CNNs are able to automatically learn and extract hierarchical features from the input data. This is achieved through convolutional layers, which apply convolution operations to the input, enabling the network to detect patterns like edges, corners, and textures, making CNN very effective in medical image processing. These convolutional operations are followed by activation functions like ReLU (Rectified Linear Unit) to introduce non-linearity into the model.
+
+\section{CNN architectures used for solving the ALL blood cell classification}
+\subsection{MobileNetV2}
+
+MobileNetV2 is an advanced deep learning architecture specifically optimized for on-device vision applications, particularly well-suited for mobile and edge devices. Developed by Google researchers, it represents an evolution of the original MobileNet model, focusing on enhancing both accuracy and efficiency in computer vision tasks.
+
+MobileNetV2 introduces innovative features such as inverted residuals with linear bottlenecks, enabling improved gradient flow during training and maximizing computational resources. Its design includes a lightweight depthwise separable convolution followed by a linear (1x1) convolution, capturing complex patterns efficiently within a limited computational budget. Inverted residuals allow for efficient feature reuse across different layers, while depthwise separable convolutions significantly reduce parameters and computations. The model also incorporates width and resolution multipliers, offering flexibility to balance accuracy and computational efficiency. 
+
+MobileNetV2 finds widespread application in real-time tasks like image recognition, object detection, and scene analysis on mobile devices due to its lightweight nature, making it ideal for resource-constrained environments.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/mobilenetv2.png} 
+    \caption{MobileNetV2 blocks }
+\end{figure}
+
+This backbone has approximately 3.4 million trainable parameters with 53 deep layers.
+\subsection{EfficientNetB0}
+
+EfficientNetB0 is the foundational model in the EfficientNet family of convolutional neural network architectures, known for its remarkable balance between accuracy and computational efficiency. Developed by Google researchers, this model leverages compound scaling to ensure that network depth, width, and resolution grow proportionally, leading to superior performance without a significant increase in computational demands. It incorporates depthwise separable convolutions for reduced parameter count and computational overhead, making it well-suited for resource-constrained devices. Regularization techniques such as dropout and batch normalization enhance its generalization and training speed. EfficientNetB0 is widely applied in various computer vision tasks, including image classification, object detection, and segmentation, and is a preferred choice for projects that require a combination of high accuracy and efficient model design.
+
+The EfficientNetB0 has 11 million trainable parameters.
+
+\subsection{MobileNet Tiny}
+
+MobileNet Tiny serves as the third choice for our classification task backbone, introduced in response to the suboptimal performance of federated learning models. Derived from the groundwork laid by SSD-Lite and MobileNetV2, MobileNet-Tiny is designed to enable real-time object detection on non-GPU computers and edge devices, such as Raspberry Pi, addressing the need for efficient processing in resource-constrained environments.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/tiny.png} 
+    \caption{Tiny MobileNet}
+\end{figure}
+
+\section{Deep Learning on Decentralized Data}
+Since our application processes medical data, it has a very strong privacy requirement: The patients’ data should not leave the hospital. To deal with this issue, we implement a Federated Learning approach. This enables our intelligent algorithm to learn collaboratively from multiple hospitals (edge devices) without ever sharing the sensitive data between them or with a central server. The process can be described in four phases. In the first phase, the server starts with a central model. The edge devices improve the model with their own data in phase two. In phase three, only the updates to the models are sent to the server.  Finally, the server combines the received models into a single model. The process repeats for multiple iterations which are usually just referred to as rounds.
+
+As we have an image classification task, we will need to train a CNN in a federated way. This can pose a challenge as commonly used image classification models are quite large. We don’t expect edge devices to be very powerful, so we need to make the training process as efficient as possible. Our solution for this problem is to combine Federated Learning with Transfer Learning, meaning that we take one of the already trained image classification models (see the section above) and we freeze the backbone of the network. That means that we will only need to train the head of the network. (which we replace with a new head that can classify between our four classes). In this way we drastically reduce the number of parameters that our model has.
+
+The development of a Federated Learning based application requires two steps: the experimentation and the deployment. In the following paragraphs we will only focus on experimentation. To experiment with federated learning, we use the dataset from Kaggle and we split it into multiple smaller datasets, one for each client. We keep this data in a different folder and we load it into a different Tensorflow Dataset, as each one of these datasets is associated with a client id. We also take into consideration that this split does not have to be equal, as in the real world some hospitals will have more data and others will have less data.
+
+After we have split the original dataset for each client, we define the model. We use MobileNetV2 with the frozen backbone. At this step we have the model and the data, therefore we can start the federated learning simulation. For doing that, we need to initialise the weighted federated averaging algorithm. It is weighted because different weights are assigned to each client update. This is useful for giving more importance to some clients than others. To initialise this federated learning algorithm, we have to provide two optimizers. While regular training only requires a single optimizer, for federated learning we have to have two optimizers, one for the clients and one for the server.
+
+Once the federated learning algorithm has been initialised, we can start the federated learning simulation. The simulation consists of multiple rounds, as explained in the first paragraph of this section. The steps are repeated for a predefined number of rounds. After the proof-of-concept has been established using the simulation, we move to the real world and try to achieve the same thing using docker. With docker compose, we define the number of clients and we mount to each client a different dataset folder. That means that now we have our data logically separated between clients, and we can test the concept in a real environment.
 
 
 \chapter{Application (numerical validation)}
