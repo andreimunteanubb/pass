@@ -114,6 +114,10 @@ Chiorean Alexandra, Data Science, maria.alexandra.chiorean@stud.ubbcluj.ro
 		\item conclude by the the results obtained.
 		\item Please add a graphical abstract of your work. 
 	\end{itemize}
+ TODO:
+ - document dataset -> number of samples, location, classes (exploratory data analysis)
+ - try to replicate the results from the repo (https://github.com/MAmirEshraghi/Lightweight-Deep-CNN-Based-Mobile-App-in-the-Screening-of-ALL)
+ - use tiny efficientnet
 
 	
 
@@ -237,23 +241,157 @@ Describe your approach!
 
 Describe in reasonable detail the algorithm you are using to address this problem. A psuedocode description of the algorithm you are using is frequently useful. Trace through a concrete example, showing how your algorithm processes this example. The example should be complex enough to illustrate all of the important aspects of the problem but simple enough to be easily understood. If possible, an intuitively meaningful example is better than one with meaningless symbols.
 
+\section{Convolutional Neural Networks}
+
+Convolutional Neural Networks, are a class of deep learning models specifically designed for processing images and videos. They are widely used in computer vision tasks like image recognition, object detection, and image generation. 
+
+CNNs are able to automatically learn and extract hierarchical features from the input data. This is achieved through convolutional layers, which apply convolution operations to the input, enabling the network to detect patterns like edges, corners, and textures, making CNN very effective in medical image processing. These convolutional operations are followed by activation functions like ReLU (Rectified Linear Unit) to introduce non-linearity into the model.
+
+\section{CNN architectures used for solving the ALL blood cell classification}
+\subsection{MobileNetV2}
+
+MobileNetV2 is an advanced deep learning architecture specifically optimized for on-device vision applications, particularly well-suited for mobile and edge devices. Developed by Google researchers, it represents an evolution of the original MobileNet model, focusing on enhancing both accuracy and efficiency in computer vision tasks.
+
+MobileNetV2 introduces innovative features such as inverted residuals with linear bottlenecks, enabling improved gradient flow during training and maximizing computational resources. Its design includes a lightweight depthwise separable convolution followed by a linear (1x1) convolution, capturing complex patterns efficiently within a limited computational budget. Inverted residuals allow for efficient feature reuse across different layers, while depthwise separable convolutions significantly reduce parameters and computations. The model also incorporates width and resolution multipliers, offering flexibility to balance accuracy and computational efficiency. 
+
+MobileNetV2 finds widespread application in real-time tasks like image recognition, object detection, and scene analysis on mobile devices due to its lightweight nature, making it ideal for resource-constrained environments.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/mobilenetv2.png} 
+    \caption{MobileNetV2 blocks }
+\end{figure}
+
+This backbone has approximately 3.4 million trainable parameters with 53 deep layers.
+\subsection{EfficientNetB0}
+
+EfficientNetB0 is the foundational model in the EfficientNet family of convolutional neural network architectures, known for its remarkable balance between accuracy and computational efficiency. Developed by Google researchers, this model leverages compound scaling to ensure that network depth, width, and resolution grow proportionally, leading to superior performance without a significant increase in computational demands. It incorporates depthwise separable convolutions for reduced parameter count and computational overhead, making it well-suited for resource-constrained devices. Regularization techniques such as dropout and batch normalization enhance its generalization and training speed. EfficientNetB0 is widely applied in various computer vision tasks, including image classification, object detection, and segmentation, and is a preferred choice for projects that require a combination of high accuracy and efficient model design.
+
+The EfficientNetB0 has 4.01 million trainable parameters.
+
+\subsection{MobileNet Tiny}
+
+MobileNet Tiny serves as the third choice for our classification task backbone, introduced in response to the suboptimal performance of federated learning models. Derived from the groundwork laid by SSD-Lite and MobileNetV2, MobileNet-Tiny is designed to enable real-time object detection on non-GPU computers and edge devices, such as Raspberry Pi, addressing the need for efficient processing in resource-constrained environments.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/tiny.png} 
+    \caption{Tiny MobileNet}
+\end{figure}
+
+\section{Deep Learning on Decentralized Data}
+Since our application processes medical data, it has a very strong privacy requirement: The patients’ data should not leave the hospital. To deal with this issue, we implement a Federated Learning approach. This enables our intelligent algorithm to learn collaboratively from multiple hospitals (edge devices) without ever sharing the sensitive data between them or with a central server. The process can be described in four phases. In the first phase, the server starts with a central model. The edge devices improve the model with their own data in phase two. In phase three, only the updates to the models are sent to the server.  Finally, the server combines the received models into a single model. The process repeats for multiple iterations which are usually just referred to as rounds.
+
+As we have an image classification task, we will need to train a CNN in a federated way. This can pose a challenge as commonly used image classification models are quite large. We don’t expect edge devices to be very powerful, so we need to make the training process as efficient as possible. Our solution for this problem is to combine Federated Learning with Transfer Learning, meaning that we take one of the already trained image classification models (see the section above) and we freeze the backbone of the network. That means that we will only need to train the head of the network. (which we replace with a new head that can classify between our four classes). In this way we drastically reduce the number of parameters that our model has.
+
+The development of a Federated Learning based application requires two steps: the experimentation and the deployment. In the following paragraphs we will only focus on experimentation. To experiment with federated learning, we use the dataset from Kaggle and we split it into multiple smaller datasets, one for each client. We keep this data in a different folder and we load it into a different Tensorflow Dataset, as each one of these datasets is associated with a client id. We also take into consideration that this split does not have to be equal, as in the real world some hospitals will have more data and others will have less data.
+
+After we have split the original dataset for each client, we define the model. We use MobileNetV2 with the frozen backbone. At this step we have the model and the data, therefore we can start the federated learning simulation. For doing that, we need to initialise the weighted federated averaging algorithm. It is weighted because different weights are assigned to each client update. This is useful for giving more importance to some clients than others. To initialise this federated learning algorithm, we have to provide two optimizers. While regular training only requires a single optimizer, for federated learning we have to have two optimizers, one for the clients and one for the server.
+
+Once the federated learning algorithm has been initialised, we can start the federated learning simulation. The simulation consists of multiple rounds, as explained in the first paragraph of this section. The steps are repeated for a predefined number of rounds. After the proof-of-concept has been established using the simulation, we move to the real world and try to achieve the same thing using docker. With docker compose, we define the number of clients and we mount to each client a different dataset folder. That means that now we have our data logically separated between clients, and we can test the concept in a real environment.
+
 
 \chapter{Application (numerical validation)}
 \label{chapter:application}
 
-
-Explain the experimental methodology and the numerical results obtained with your approach and the state of art approache(s).
+Explain the experimental methodology and the numerical results obtained with your approach and the state of art approach(es).
 
 Try to perform a comparison of several approaches.
 
 Statistical validation of the results.
 
+\section{Experiments with different deep models used for image classification}
+
+Our application aims to accurately classify the four classes defining the ALL disease. To achieve this, we plan to evaluate two distinct neural networks originally designed for object recognition but adaptable for classification tasks through the addition of supplementary layers. The selected models are MobileNetV2 and EfficientNetB0. These models are suitable for the initial project prototype due to their relatively lower parameter count compared to state-of-the-art methods like VGG16, facilitating a smoother execution of the federated learning process.
+
+Our experiments are conducted in Tensorflow, utilizing the pre-implemented versions of MobileNet and EfficientNetB0 from Keras as a starting point. We employ three different training strategies. The first involves training the model's weights from scratch using the training dataset, initialized randomly. Given our limited training samples (approximately 5,000), this method is susceptible to overfitting. The second strategy, termed fine-tuning, initializes the models with pre-trained weights from ImageNet and continues learning from that point. This approach is expected to yield superior results, leveraging the efficiency of transfer learning in classification tasks.
+
+Finally, in an effort to further reduce the number of learnable parameters during the federated learning process, we aim to train only the last few layers of the network. This approach is anticipated to yield less favorable results due to the limited parameters and the inability to delve deeply into learning the input image.
+
+For all training experiments the Adam optimizer is used, having the learning rate scheduler, defined by the Exponential Decay. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{images/mobilenet.png} 
+    \caption{MobileNetV2 loss and accuracy values during fine-tune training }
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{images/efficientnet_plots.png} 
+    \caption{EfficientNetB0 loss and accuracy values during fine-tune training }
+\end{figure}
+
+
+\section{Initial experiments with Federated Learning}
+All federated learning experiments were performed on the MobileNetV2 model. Its architecture consists of a backbone with frozen layers, resulting in only 5716 trainable parameters. The transfer learning involved loading pretrained weights from ImageNet. The model architecture consisted of a global average pooling layer, a batch normalisation layer followed by a dense layer with softmax activation. The loss function used was sparse categorical cross entropy. With this network, the average training time for the whole dataset (3000+ training  images) was 20 minutes per round utilising a T4 GPU on Google Colab. The federated learning experiment without backbone freeze was cut short, after taking more than two hours for a single round.
+
+In the initial experiment, a toy dataset consisting of 900 training images was used. The evaluation metrics for this experiment were sparse categorical accuracy (0.3422216) and loss (1.2883721).
+
+Subsequent experiments involved the entire dataset, with 1458 training images for client 1 and 1459 training images for client 2. Two different optimization strategies were employed:
+
+Experiments with Stochastic Gradient Descent Optimizer:
+\begin{itemize}
+Client optimizer: Stochastic Gradient Descent with Learning Rate 0.02
+Server optimizer: Stochastic Gradient Descent with Learning Rate 1.00
+Results are summarized in table \ref{tab:results_sgd}.
+\end{itemize}
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Round} & \textbf{Sparse Categorical Accuracy} & \textbf{Loss} \\
+\hline
+1 & 0.28946334 & 1.3677657 \\
+\hline
+2 & 0.29013768 & 1.3658522 \\
+\hline
+\end{tabular}
+\caption{Experiments with Stochastic Gradient Descent}
+\label{tab:results_sgd}
+\end{table}
+
+
+Experiments with Adam Optimizer:
+\begin{itemize}
+Client optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
+Server optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
+Results are summarized in table \ref{tab:results_adam}.
+\end{itemize}
+
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Round} & \textbf{Sparse Categorical Accuracy} & \textbf{Loss} \\
+\hline
+1 & 0.29784024 & 1.3651314 \\
+\hline
+2 & 0.2983202 & 1.3649479 \\
+\hline
+3 & 0.30010286 & 1.364796 \\
+\hline
+4 & 0.30167982 & 1.364657 \\
+\hline
+5 & 0.30147412 & 1.3645263 \\
+\hline
+\end{tabular}
+\caption{Experiments with Adam Optimizer}
+\label{tab:results_adam}
+\end{table}
+
 
 \section{Methodology}
 \label{section:methodology}
 
+During the training phase, the model uses categorical cross entropy as a measure of how well it is doing its task, adjusting its parameters to minimize this loss. In the evaluation phase, the accuracy metric is used to assess the overall correctness of the model's predictions on a separate dataset. The goal during training is to improve accuracy indirectly by minimizing the chosen loss function. 
+
+Categorical cross entropy is particularly suited for scenarios where there are multiple classes, and each input belongs to one and only one class. It compares the distribution of predicted class probabilities with the true distribution (one-hot encoded), penalizing the model more when its predictions are further from the actual values.
+
+However, for the model evaluation accuracy metric is chosen. Accuracy is a straightforward metric that measures the proportion of correctly classified instances out of the total instances. 
+
 \begin{itemize}
-	\item What are criteria you are using to evaluate your method? 
 	\item What specific hypotheses does your experiment test? Describe the experimental methodology that you used. 
 	\item What are the dependent and independent variables? 
 	\item What is the training/test data that was used, and why is it realistic or interesting? Exactly what performance data did you collect and how are you presenting and analyzing it? Comparisons to competing methods that address the same problem are particularly useful.
@@ -261,11 +399,51 @@ Statistical validation of the results.
 
 \section{Data}
 \label{section:data}
+The dataset that is used for differentiation between acute lymphoblastic leukemia blood cells and healthy cells, is taken from Kaggle, at this url location: https://www.kaggle.com/datasets/mohammadamireshraghi/blood-cell-cancer-all-4class. 
+The dataset consists of 5384 samples, divided in 4 different classes: benign, early PreB, PreB and ProB, which have the following distribution.
 
-Describe the used data.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{images/classes_distribution.png} 
+    \caption{Classes distribution in the dataset}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/samples.png} 
+    \caption{Example of segmentation ground truth mask with correct label}
+\end{figure}
+
+To boost the training performance, augmentation is apply on the images in form of resizing, vertical and horizontal flip. The dataset is split in training, validation and test subsamples, with the ratio of 0.8 for training, 0.1 for validation and 0.1 for testing. 
+
+
 
 \section{Results}
 \label{section:results}
+
+Below, you can find the outcomes of our initial training experiments and the accuracy of the validation step:
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Training type} & \textbf{MobileNetv2} & \textbf{EfficientNetB0} \\
+\hline
+Learning from scratch & 0.30 & 0.88 \\
+\hline
+Fine-tune & 0.9880 & 0.9940 \\
+\hline
+Backbone freeze & 0.887 & 0.42 \\
+\hline
+\end{tabular}
+\caption{Experiments of the models with different training stategies}
+\label{tab:results_sgd}
+\end{table}
+
+As expected, the fine-tuning experiments are getting the best results for our classification task. The models learning curve can also be seen in the figures below. The 
+small increase in the EfficentNet accuracy is due to the additional 0.6 milion parameters, but for the current use-case, we choose to go with the MobileNet even though the accuracy is slightly smaller.  
+
+However, the results for full training and the backbone freeze are quite puzzling, We can see that EfficientNet is able to learn, without overfitting, while MobileNet hasn't learned anything. This behaviour has to be investigated in the future.
 
 Present the quantitative results of your experiments. Graphical data presentation such as graphs and histograms are frequently better than tables. What are the basic differences revealed in the data. Are they statistically significant?
 
