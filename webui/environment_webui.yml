@@ -3,6 +3,8 @@ channels:
   - defaults
 dependencies:
   - python=3.11
+  - azure-storage-blob
+  - tensorflow==2.12
   - numpy
   - pandas
   - matplotlib
