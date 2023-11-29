@@ -119,6 +119,8 @@ Chiorean Alexandra, Data Science, maria.alexandra.chiorean@stud.ubbcluj.ro
  - try to replicate the results from the repo (https://github.com/MAmirEshraghi/Lightweight-Deep-CNN-Based-Mobile-App-in-the-Screening-of-ALL)
  - use tiny efficientnet
 
+	
+
 \noindent
 \textbf{\textcolor{green}{Remind that a good report should:}}
 \begin{itemize}	
@@ -199,7 +201,26 @@ Chapter \ref{chapter:swot} will describe the strengths, the opportunities, threa
 
 Finally, a conclusion chapter will be summarizing our results, future plans, why and how our approach is helping the society around us.
 
+\section{Analyzing the philosophical aspects}
+\label{section:philosophicalAspects}
 
+This application has the potential to save lives by detecting Acute Lymphoblastic Leukemia early. Early detection can lead to more effective treatment and improved outcomes for patients. Not only that, but this application can make diagnosis simpler and more accessible, as it can also be used in communities without trained professionals for pre-scanning. However, if the model is not accurate enough, it can have false positives or negatives, and such a diagnosis can have serious consequences for patients.
+
+A false positive can cause unnecessary stress and anxiety. Receiving a cancer diagnosis, even if it's later proven to be incorrect, can have a profound emotional impact on an individual and their loved ones. It can also put the patient under unnecessary and invasive medical procedures such as biopsies or other diagnostic tests. We should also consider the unnecessary risks these investigations have. 
+
+A false negative  can be even more critical. The patient might not receive the necessary treatment in a timely manner, potentially allowing the cancer to progress to a more advanced stage, significantly reducing the patient's chances of being cured.
+
+The emotional toll on an individual receiving an incorrect diagnosis can be profound. False positives may lead to unnecessary emotional distress, while false negatives might create a false sense of security that could be shattered later.
+
+We must ensure that medical professionals are involved in the decision-making process. Transparent communication with patients about the limitations and possibilities of AI in medical diagnostics is also vital to managing expectations and reducing potential negative impacts on their lives.
+
+Patients should be informed about the use of their data for training AI models, and their consent should be obtained to ensure transparency and respect for individual autonomy. Federated learning addresses some privacy concerns by keeping patient data within hospitals. However, it's essential to ensure that the federated learning process is secure to prevent any unauthorised access to sensitive medical information. If patient data is not properly anonymized before being used in the federated learning process, there is a risk of re-identification, carrying serious emotional and legal consequences.
+
+
+
+Our model's objectivity in classifying blood cells is critical for reliable results. Bias in the training data or model could lead to inaccuracies and potentially harm patients. While our model can assist, the final decision and interpretation should involve medical professionals who can bring their expertise and judgement to the process. There should be a standard set of criteria for identifying leukemia cells and our algorithm should be transparent and provide the reason why it classifies something as cancer or not.
+
+In summary, while the project has the potential to significantly benefit society by detecting leukemia early, careful attention must be paid to ethical considerations, privacy, and the objectivity of the AI model. Regular evaluations and collaboration with medical professionals can help ensure the success of the project while minimising potential risks and ethical concerns.
 
 \chapter{Scientific Problem}
 \label{section:scientificProblem}
@@ -329,12 +350,16 @@ Subsequent experiments involved the entire dataset, with 1458 training images fo
 
 Experiments with Stochastic Gradient Descent Optimizer:
 \begin{itemize}
-Client optimizer: Stochastic Gradient Descent with Learning Rate 0.02
-Server optimizer: Stochastic Gradient Descent with Learning Rate 1.00
-Results are summarized in table \ref{tab:results_sgd}.
+\item Training setup
+\begin{itemize}
+    \item Backbone is freezed 
+    \item Client optimizer: Stochastic Gradient Descent with Learning Rate 0.02
+    \item Server optimizer: Stochastic Gradient Descent with Learning Rate 1.00
+\end{itemize}
+\item Experiment 1: The first experiment was done on the whole dataset, having 2 clients. We trained the model for 2 rounds, with minor  improvements in both accuracy and loss. The model seems to learn very slow. Results are summarized in table \ref{tab:results_sgd}.
 \end{itemize}
 
-\begin{table}[htb]
+\begin{table}[h!tb]
 \centering
 \begin{tabular}{|c|c|c|}
 \hline
@@ -352,11 +377,15 @@ Results are summarized in table \ref{tab:results_sgd}.
 
 Experiments with Adam Optimizer:
 \begin{itemize}
-Client optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
-Server optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
-Results are summarized in table \ref{tab:results_adam}.
+\item Training setup
+\begin{itemize}
+    \item Backbone is freezed 
+    \item Client optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
+    \item Server optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
 \end{itemize}
 
+\item Experiment 1: The first experiment was done on the whole dataset, having 2 clients. We trained the model for 5 rounds, but only the first epochs gave significant improvement in both accuracy and loss. The model again seems to learn very slow. Results are summarized in table \ref{tab:results_adam}.
+\end{itemize}
 
 \begin{table}[htb]
 \centering
@@ -379,6 +408,64 @@ Results are summarized in table \ref{tab:results_adam}.
 \label{tab:results_adam}
 \end{table}
 
+Experiments with Adam Optimizer for the client and SGD for the server:
+\begin{itemize}
+\item Training setup
+\begin{itemize}
+    \item Backbone is freezed 
+    \item Client optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
+    \item Server optimizer: Stochastic Gradient Descent with Learning Rate 1.00
+\end{itemize}
+\item Experiment 1: The second experiment focuses on reducing the dataset complexity, and using only two classes: Benign and Pro-B. The dataset reduces significantly this way, having 1.2k samples for training and approximately 200 samples for testing. We changed the batch size to 4. With this setup we get an accuracy of aprox. 60\% for both test and training, after 5 epochs. The same problem with the training rate persists. Results can be seen in the table \ref{tab:results_adam_experiment_2}.
+\item Experiment 2: For the third experiment we took three classes: Pre-B, Pro-B and benign. Here we changed the number of clients to 3, and we kept the batch size the same. Compared with the 2 clients training, the accuracy seams to decrease by 0.04 on the training set. From this we take that having multiple clients, will not improve the results, as long as we use the same dataset for training multiple epochs. Results are summarized in the table \ref{tab:results_adam_experiment_3}
+\end{itemize}
+
+
+\begin{table}[htb!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Round} & \textbf{Sparse Categorical Accuracy} & \textbf{Loss} \\
+\hline
+1 & 0.6013214 & 0.7844671 \\
+\hline
+2 & 0.60169894 & 0.6759241 \\
+\hline
+3 & 0.60169894 & 0.67342085 \\
+\hline
+4 & 0.60169894 & 0.6732075 \\
+\hline
+5 & 0.60169894 & 0.6731787 \\
+\hline
+5 & 0.60169894 & 0.67317086 \\
+\hline
+Evaluation results & 0.66 & 0.64 \\
+\hline
+\end{tabular}
+
+\caption{Experiments with only Benign vs Pro-B class}
+\label{tab:results_adam_experiment_2}
+\end{table} 
+
+\begin{table}[htb!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Number of clients} & \textbf{Round} & \textbf{Sparse Categorical Accuracy} & \textbf{Loss} \\
+\hline
+\multirow{3}{1em}{2} & 1  & 0.4172 & 1.358 \\
+ & 2 & 0.4197 & 1.0754 \\
+ &  3 & 0.4197 & 1.0718 \\
+\hline
+\multirow{4}{1em}{3} & 1  & 0.4124 & 1.1569 \\
+ & 2 & 0.4155 & 1.0781 \\
+ &  3 & 0.4155 & 1.0725 \\
+& Evaluation results & 0.4801762 &  1.04286\\
+\hline
+\end{tabular}
+\caption{Experiments with Benign, Pre-B and Pro-B class}
+\label{tab:results_adam_experiment_3}
+\end{table}
 
 \section{Methodology}
 \label{section:methodology}
