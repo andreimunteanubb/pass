@@ -106,29 +106,7 @@ Chiorean Alexandra, Data Science, maria.alexandra.chiorean@stud.ubbcluj.ro
 \pagenumbering{gobble}
 
 \begin{abstract}
-	Text of abstract. Short info about: 
-	\begin{itemize}
-		\item project relevance/importance, 
-		\item inteligent methods used for solving, 
-		\item data involved in the numerical experiments; 
-		\item conclude by the the results obtained.
-		\item Please add a graphical abstract of your work. 
-	\end{itemize}
- TODO:
- - document dataset -> number of samples, location, classes (exploratory data analysis)
- - try to replicate the results from the repo (https://github.com/MAmirEshraghi/Lightweight-Deep-CNN-Based-Mobile-App-in-the-Screening-of-ALL)
- - use tiny efficientnet
-
-	
-
-\noindent
-\textbf{\textcolor{green}{Remind that a good report should:}}
-\begin{itemize}	
-	\item be fun to read with many figures and visualizations;
-	\item be easy to follow even for AI/ML novice;
-	\item clearly convey the potential of AI/ML to the application domain;
-	\item around 10 minutes to read (although this is not a hard constraint).
-\end{itemize}
+This project addresses the problem of early blood cell cancer detection by leveraging artificial intelligence (AI) systems for social good. Blood cancer diagnoses are inherently complex, often requiring the collaboration of multiple doctors. To tackle this, we've implemented (AI), specifically utilising the MobileNetV2\cite{sandler2018mobilenetv2}  model, to analyse microscopic images of blood cells. To ensure the privacy of the patients while also improving our AI we've tried a pioneering approach known as federated learning. This methodology allows the AI to learn from diverse data sources in various hospitals without compromising privacy. Our project has yielded promising results, particularly with the MobileNetV2\cite{sandler2018mobilenetv2}  model, which has surpassed initial expectations. Additionally, we've developed a user-friendly web tool, streamlining the integration of our system into the testing procedures of medical professionals. However, there are a lot of challenges with the federated learning approach, notably the limitation of computing power  which lead us to rely on Google Colab with its own set of limitations.
 
 \end{abstract}
 
@@ -139,7 +117,6 @@ Chiorean Alexandra, Data Science, maria.alexandra.chiorean@stud.ubbcluj.ro
 
 \listoftables
 \listoffigures
-\listofalgorithms
 
 \newpage
 
@@ -171,7 +148,6 @@ In US, approximately at each 3 minutes, a person is diagnosed with blood cancer.
  The solution we proposed is based on a Convolutional Neural Network, which is known to obtain very accurate predictions on image tasks, having different architectures for classification tasks. In the medical field, patients confidence is really important, therefore datasets generation can be a very slow and bureaucratic. To avoid this impediment, we'll implement a federated learning approach that would speedup the entire process.
 \end{itemize}
 
-\textbf {A short discussion of how it fits into related work in the area is also desirable. Summarize the basic results and conclusions that you will present. }
 
 
 \section{Paper structure and original contribution(s)}
@@ -184,8 +160,6 @@ The main contribution of this report is to present an intelligent algorithm for 
 The second contribution of this report consists of building an intuitive, easy-to-use and user friendly software application. Our aim is to build a product that would enable doctors or patients to upload an image with the PBS on our website, where the model would predict the class of the blood sample. This application can be seen as a tool for doctors when they need a second, objective opinion, but also for the patients who could find a possible interpretation of their medical test before going to a specialist.
 
 The third contribution in this report is related to the learning procedure. Since most of the medical data is very sensitive and confidential, we aim to train our model in a Federated Learning approach, making the development and accuracy of the algorithm increase sooner. The data that the medical units is already having we'll be fed to the model, encoded, such that the data cannot be retrieved from the model. In this way, we take advantage of the quality and quantity of data, that each unit has, but it reaches to a greater purpose where patients from different location can be helped, on click away.
-
-\textbf{The present work contains $xyz$ bibliographical references and is structured in five chapters as follows.}
 
 The first chapter is a short introduction in the blood cell cancer classification and its purpose in the current medical context.
 
@@ -256,8 +230,6 @@ Last but not least, we use Docker, for the federated learning process, which ens
 \chapter{Investigated approach}
 \label{chapter:proposedApproach}
 
-Describe your approach!
-
 Describe in reasonable detail the algorithm you are using to address this problem. A psuedocode description of the algorithm you are using is frequently useful. Trace through a concrete example, showing how your algorithm processes this example. The example should be complex enough to illustrate all of the important aspects of the problem but simple enough to be easily understood. If possible, an intuitively meaningful example is better than one with meaningless symbols.
 
 \section{Convolutional Neural Networks}
@@ -283,13 +255,13 @@ MobileNetV2 finds widespread application in real-time tasks like image recogniti
 This backbone has approximately 3.4 million trainable parameters with 53 deep layers.
 \subsection{EfficientNetB0}
 
-EfficientNetB0 is the foundational model in the EfficientNet family of convolutional neural network architectures, known for its remarkable balance between accuracy and computational efficiency. Developed by Google researchers, this model leverages compound scaling to ensure that network depth, width, and resolution grow proportionally, leading to superior performance without a significant increase in computational demands. It incorporates depthwise separable convolutions for reduced parameter count and computational overhead, making it well-suited for resource-constrained devices. Regularization techniques such as dropout and batch normalization enhance its generalization and training speed. EfficientNetB0 is widely applied in various computer vision tasks, including image classification, object detection, and segmentation, and is a preferred choice for projects that require a combination of high accuracy and efficient model design.
+EfficientNetB0 \cite{tan2019efficientnet} is the foundational model in the EfficientNet family of convolutional neural network architectures, known for its remarkable balance between accuracy and computational efficiency. Developed by Google researchers, this model leverages compound scaling to ensure that network depth, width, and resolution grow proportionally, leading to superior performance without a significant increase in computational demands. It incorporates depthwise separable convolutions for reduced parameter count and computational overhead, making it well-suited for resource-constrained devices. Regularization techniques such as dropout and batch normalization enhance its generalization and training speed. EfficientNetB0 is widely applied in various computer vision tasks, including image classification, object detection, and segmentation, and is a preferred choice for projects that require a combination of high accuracy and efficient model design.
 
 The EfficientNetB0 has 4.01 million trainable parameters.
 
 \subsection{MobileNet Tiny}
 
-MobileNet Tiny serves as the third choice for our classification task backbone, introduced in response to the suboptimal performance of federated learning models. Derived from the groundwork laid by SSD-Lite and MobileNetV2, MobileNet-Tiny is designed to enable real-time object detection on non-GPU computers and edge devices, such as Raspberry Pi, addressing the need for efficient processing in resource-constrained environments.
+MobileNet Tiny \cite{howard2017mobilenets} serves as the third choice for our classification task backbone, introduced in response to the suboptimal performance of federated learning models. Derived from the groundwork laid by SSD-Lite and MobileNetV2, MobileNet-Tiny is designed to enable real-time object detection on non-GPU computers and edge devices, such as Raspberry Pi, addressing the need for efficient processing in resource-constrained environments.
 
 \begin{figure}[h]
     \centering
@@ -306,17 +278,11 @@ The development of a Federated Learning based application requires two steps: th
 
 After we have split the original dataset for each client, we define the model. We use MobileNetV2 with the frozen backbone. At this step we have the model and the data, therefore we can start the federated learning simulation. For doing that, we need to initialise the weighted federated averaging algorithm. It is weighted because different weights are assigned to each client update. This is useful for giving more importance to some clients than others. To initialise this federated learning algorithm, we have to provide two optimizers. While regular training only requires a single optimizer, for federated learning we have to have two optimizers, one for the clients and one for the server.
 
-Once the federated learning algorithm has been initialised, we can start the federated learning simulation. The simulation consists of multiple rounds, as explained in the first paragraph of this section. The steps are repeated for a predefined number of rounds. After the proof-of-concept has been established using the simulation, we move to the real world and try to achieve the same thing using docker. With docker compose, we define the number of clients and we mount to each client a different dataset folder. That means that now we have our data logically separated between clients, and we can test the concept in a real environment.
+Once the federated learning \cite{mcmahan2017communication} algorithm has been initialised, we can start the federated learning simulation. The simulation consists of multiple rounds, as explained in the first paragraph of this section. The steps are repeated for a predefined number of rounds. After the proof-of-concept has been established using the simulation, we move to the real world and try to achieve the same thing using docker. With docker compose, we define the number of clients and we mount to each client a different dataset folder. That means that now we have our data logically separated between clients, and we can test the concept in a real environment.
 
 
 \chapter{Application (numerical validation)}
 \label{chapter:application}
-
-Explain the experimental methodology and the numerical results obtained with your approach and the state of art approach(es).
-
-Try to perform a comparison of several approaches.
-
-Statistical validation of the results.
 
 \section{Experiments with different deep models used for image classification}
 
@@ -416,8 +382,8 @@ Experiments with Adam Optimizer for the client and SGD for the server:
     \item Client optimizer: Adam with Learning Rate 0.0001, beta1=0.9, beta2=0.999, eps=1e-08
     \item Server optimizer: Stochastic Gradient Descent with Learning Rate 1.00
 \end{itemize}
-\item Experiment 1: The second experiment focuses on reducing the dataset complexity, and using only two classes: Benign and Pro-B. The dataset reduces significantly this way, having 1.2k samples for training and approximately 200 samples for testing. We changed the batch size to 4. With this setup we get an accuracy of aprox. 60\% for both test and training, after 5 epochs. The same problem with the training rate persists. Results can be seen in the table \ref{tab:results_adam_experiment_2}.
-\item Experiment 2: For the third experiment we took three classes: Pre-B, Pro-B and benign. Here we changed the number of clients to 3, and we kept the batch size the same. Compared with the 2 clients training, the accuracy seams to decrease by 0.04 on the training set. From this we take that having multiple clients, will not improve the results, as long as we use the same dataset for training multiple epochs. Results are summarized in the table \ref{tab:results_adam_experiment_3}
+\item Experiment 1: The first experiment focuses on reducing the dataset complexity, and using only two classes: Benign and Pro-B. The dataset reduces significantly this way, having 1.2k samples for training and approximately 200 samples for testing. We changed the batch size to 4. With this setup we get an accuracy of aprox. 60\% for both test and training, after 5 epochs. The same problem with the training rate persists. Results can be seen in the table \ref{tab:results_adam_experiment_2}.
+\item Experiment 2: For the second experiment we took three classes: Pre-B, Pro-B and benign. Here we changed the number of clients to 3, and we kept the batch size the same. Compared with the 2 clients training, the accuracy seams to decrease by 0.04 on the training set. From this we take that having multiple clients, will not improve the results, as long as we use the same dataset for training multiple epochs. Results are summarized in the table \ref{tab:results_adam_experiment_3}
 \end{itemize}
 
 
@@ -437,7 +403,7 @@ Experiments with Adam Optimizer for the client and SGD for the server:
 \hline
 5 & 0.60169894 & 0.6731787 \\
 \hline
-5 & 0.60169894 & 0.67317086 \\
+6 & 0.60169894 & 0.67317086 \\
 \hline
 Evaluation results & 0.66 & 0.64 \\
 \hline
@@ -445,6 +411,24 @@ Evaluation results & 0.66 & 0.64 \\
 
 \caption{Experiments with only Benign vs Pro-B class}
 \label{tab:results_adam_experiment_2}
+\end{table} 
+
+\begin{table}[htb!]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Round} & \textbf{Sparse Categorical Accuracy} & \textbf{Loss} \\
+\hline
+1 & 0.8928632 & 0.33380216 \\
+\hline
+2 & 0.9413339 & 0.17066188 \\
+\hline
+3 & \approx 0.95 & \approx 0.16 \\
+\hline
+\end{tabular}
+
+\caption{Experiments with only Benign vs Pro-B class and one client}
+\label{tab:results_adam_experiment_4}
 \end{table} 
 
 \begin{table}[htb!]
@@ -532,109 +516,32 @@ However, the results for full training and the backbone freeze are quite puzzlin
 
 Present the quantitative results of your experiments. Graphical data presentation such as graphs and histograms are frequently better than tables. What are the basic differences revealed in the data. Are they statistically significant?
 
-\section{Discussion}
-\label{section:discussion}
-
-\begin{itemize}
-	\item Is your hypothesis supported? 
-	\item What conclusions do the results support about the strengths and weaknesses of your method compared to other methods? 
-	\item How can the results be explained in terms of the underlying properties of the algorithm and/or the data. 
-\end{itemize}
-
 
 \chapter{SWOT Analysis}
 \label{chapter:swot}
+\section*{Strengths:}
+The MobileNetV2\cite{sandler2018mobilenetv2} model has surpassed expectations in blood cell cancer classification, demonstrating remarkable performance. The user-friendly web client and seamless integration with Azure enable efficient testing and model deployment.
 
+\section*{Weaknesses:}
+Challenges arise in federated learning implementation due to limited computational resources and few data samples. Framework issues, including but not limited to obsolete packages and conflicts, made us use external Google Colab exclusively.
+
+\section*{Opportunities:}
+Expanding the dataset and regular model updates offer opportunities to improve accuracy, while exploring better workstations can address slow convergence issues, enhancing overall efficiency and system capabilities.
+
+\section*{Threats:}
+High computational demands in federated learning may limit scalability, and frequent framework issues pose a threat to system stability.
 
 \chapter{Conclusion and future work}
 \label{chapter:concl}
 
-Try to emphasise the strengths and the weaknesses of your approach.
-What are the major shortcomings of your current method? For each shortcoming, propose additions or enhancements that would help overcome it. 
+In conclusion, our Acute Lymphoblastic Leukaemia​ blood cell cancer classification has yielded exceptionally positive results with the MobileNetV2\cite{sandler2018mobilenetv2}  model surpassing expectations. The implementation of the federated learning approach has shown promise, although challenges arise due to limited computational resources and insufficient data. We have discovered that using federated learning in a practical way requires way better computational resources than we had available on Google Collab and it is also crucial to expand the dataset when compared to the traditional approach because otherwise the model converges more slowly.
+We have also successfully developed an user-friendly web-based client for running inferences on blood samples, contributing to efficient testing procedures for the doctors involved. Because we use  the Azure cloud for storing and uploading our models we have enabled extremely short development cycles, making better models very easy to deploy to many clients.
 
-Briefly summarize the important results and conclusions presented in the paper. 
+However, it's worth noting that the federated learning framework currently utilises obsolete packages and has a lot of conflicts, making it extremely hard to train on our hardware. To overcome this challenge, we had to use the curated environment from Google Colab.
 
-\begin{itemize}
-	\item What are the most important points illustrated by your work? 
-	\item How will your results improve future research and applications in the area? 
-\end{itemize}
+In essence, our findings highlight the potential of deep learning methods, MobileNetV2\cite{sandler2018mobilenetv2}  in particular, for blood cell cancer detection and the benefits of a federated learning approach, while emphasising the very high computational resources demanded by this new privacy-preserving technology and the need to expand the datasets. 
 
-
-\chapter{Latex examples}
-
-Item example: 
-
-\begin{itemize}
-	\item content of item1
- 	\item content of item2
- 	\item content of item3
-\end{itemize}
-
-
-
-Figure example 
-
-$\ldots$ (see Figure \ref{swarmsize})
-
-\begin{figure}[htbp]
-	\centerline{\includegraphics{Fig/FitEvol.eps}}  
-	\caption{The evolution of the swarm size during the GA generations. This results were obtained for the $f_2$ test function with 5 dimensions.}
-	\label{swarmsize}
-\end{figure}
-
-
-Table example: (see Table \ref{tab3PSO})
-
-
-\begin{table}[htbp]
-	\caption{The parameters of the PSO algorithm (the micro level algorithm) used to compute the fitness of a GA chromosome.}
-	\label{tab3PSO}
-		\begin{center}
-			\begin{tabular}{p{220pt}c}
-
-				\textbf{Parameter}& \textbf{Value} \\
-				\hline\hline
- 				Number of generations& 50 \\
- 				Number of function evaluations/generation& 10 \\
- 				Number of dimensions of the function to be optimized& 5 \\
- 				Learning factor $c_{1}$& 2 \\
- 				Learning factor $c_{2}$ & 1.8\\
- 				Inertia weight& 0.5 + $\frac{rand()}{2}$\\
-		
-			\end{tabular}
-		\end{center}
-\end{table}
-
-Algorithm example 
-
-$\ldots$ (see Algorithm \ref{NGalg}).
-
-
-\algsetup{indent=1em, linenosize=\footnotesize}
-
-\begin{algorithm}
-	\caption{SGA - Spin based Genetic AQlgorithm}
-	\label{NGalg}
-		\begin{algorithmic}
-
-
-			\STATE \textbf{BEGIN}
-  		\STATE @ Randomly create the initial GA population.
-  		\STATE @ Compute the fitness of each individual.
-  		\FOR{i=1 TO NoOfGenerations}
-  			\FOR{j=1 TO PopulationSize}
-  				\STATE p $\leftarrow$ RandomlySelectParticleFromGrid();
-  				\STATE n $\leftarrow$ RandomlySelectParticleFromNeighbors(p);
-  				\STATE @ Crossover(p, n, off);
-  				\STATE @ Compute energy $\Delta H$
-  				\IF {$\Delta H$ satisfy the Ising condition}
-  					\STATE @ Replace(p,off);
-  				\ENDIF
-  			\ENDFOR
-  		\ENDFOR
-  		\STATE \textbf{END}
-\end{algorithmic}
-\end{algorithm}
+Looking ahead, we need to add more data sources in our dataset to increase the number of samples and to update the model regularly to make it better at classifying blood cell cancer. The new data should help the model become more accurate and reliable. Also, we should figure out ways to gain access to better workstations to speed up the learning process.
 
 
 \bibliographystyle{plain}
